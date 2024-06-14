@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Friend</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden; /* Prevent horizontal scroll on small screens */
+      overflow-y: hidden;/* Prevent Vertical scroll on small screens */
+      background-color: #f4f4f9; /* Light background color */
+
+    }
+
+    #chat-container {
+      border: 1px solid #ccc;
+      padding: 10px;
+      width: 98%;
+      height: 520px;
+      margin: 20px auto; /* Center chat container and add margin */
+      overflow-y: scroll;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      
+    }
+
+    #user-input {
+      width: 80%; /* Adjusted width for better mobile view */
+      height: 20px;
+      display: block;
+      padding: 10px;
+      border: 1px solid #ccc;
+      margin-top: -15px;
+      margin-left: 3px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    #send-button, #speak-button {
+      width: 8%; /* Adjusted button width for mobile */
+      height: 40px;
+      margin: 10px auto; /* Center and add margin */
+      display: block;
+      font-size: 16px;
+      padding: 10px;
+      border: none;
+      background-color: #007bff;
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transform: translateY(-60%);
+    }
+    #speak-button{
+      background-color: rgb(88, 244, 88);
+    }
+    #speak-button:hover{
+      background-color: green;
+    }
+
+
+    #send-button:hover, #speak-button:hover {
+      background-color: #0056b3;
+    }
+
+    .circle {
+      display: none; /* Hide the circle on mobile */
+    }
+
+    #settings {
+      display: none;
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #c3c3c3;
+      box-shadow: 3px 3px 5px #c3c3c3;
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      margin: 10px auto;
+    }
+
+    @media (max-width: 600px) {
+      body{
+        background-color: black;
+        border-radius: 100px;
+      }
+      #chat-container {
+        display: none;
+      }
+
+      #user-input {
+        /* background-color: rgb(36, 36, 36); */
+        /* box-shadow: 3px 3px 5px rgb(104, 104, 104) inset; */
+        border-radius: 50px;
+        width: 80%; /* Adjusted width for mobile */
+      }
+
+      #send-button, #speak-button {
+        width: 50px; /* Adjusted button width for mobile */
+        height: 50px;
+        border-radius: 150px;
+        transform: translateY(10%);
+      }
+      #speak-button:hover{
+      background-color: green;
+    }
+
+      .circle {
+        display: block; /* Display the circle on mobile */
+        width: 280px;
+        height: 280px;
+        border-radius: 50%;
+        background-color: rgba(56, 120, 240, 0.3); /* Adjust color and opacity */
+        animation: pulse 1s infinite ease-in-out;
+        box-shadow: 5px 5px 40px rgb(21, 81, 222) inset, -5px -5px 40px rgb(0, 213, 255) inset;
+        margin: 50px auto; /* Center and add margin */
+        margin-bottom: 140px;
+      }
+
+      @keyframes pulse {
+        0%, 100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.3);
+        }
+      }
+
+      #settings {
+        width: 90%;
+        margin: 10px auto; /* Center and add margin */
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+
+      #user-input {
+        margin-top: 20px; /* Adjusted margin for better spacing */
+      }
+
+      .message {
+        font-size: 12px; /* Increased font size for better readability */
+      }
+      button{
+        color: white;
+        backdrop-filter: blur(12%);
+        border-radius: 0px;
+      }
+    }
+
+    .message {
+      max-width: 60%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    /* .user-message {
+      border: 1px solid #c3c3c3;
+      align-self: flex-start;
+      margin-left: 400px;
+
+    } */
+
+    .ai-message {
+      box-shadow: 2px 2px 5px rgb(205, 205, 205);
+      border: 1px solid #c3c3c3;
+      border-radius: 0px;
+    }
+
+    .settings {
+      margin-left: 2px;
+      text-align: center; /* Center text in settings */
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin: 5px;
+      background-color: rgba(255, 255, 255, 0.373);
+    }
+
+    button:hover {
+      background-color: #0056b3;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div id="settings">
+    <button onclick="ChangeVoice()" style="color: black;">Change Voice</button>
+    <select id="voices" name="voice" style="margin-bottom: 20px;"></select> <!-- Voice selection dropdown -->
+    <button id="set-button" style="color: black;">Set</button>
+    <select id="Whom">
+      <option>Friend</option>
+    </select>
+  </div>
+
+  <button id="setting" style="color: black;" onclick="settings()">Settings</button>
+  <button id="hideSetting" style="display: none; color: black;" onclick="hideSetting()">x</button>
+
+  <div id="chat-container"></div>
+
+  <div class="circle"></div>
+
+  <div id="button-container" style="display: flex;">
+    <input type="text" id="user-input" placeholder="Type your message...">
+    <button id="send-button" class="send" >Ask</button>
+    <button id="speak-button" class="speak" >🎤</button>
+  </div>
+
+<script src="talk.js"></script>
+</body>
+</html>
+
